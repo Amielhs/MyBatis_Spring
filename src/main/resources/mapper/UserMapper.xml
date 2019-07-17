@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--<mapper namespace="com.bdqn.mapper.user.UserMapper">-->
+<!--<mapper namespace="com.bdqn.mybatis.mapper">-->
+<mapper namespace="com.bdqn.mybatis.mapper.UserMapper">
+    <!-- 当数据库中的字段信息与对象的属性不一致时需要通过resultMap来映射 -->
+    <resultMap type="User" id="userList">
+         <result property="id" column="id" />
+        <result property="userCode" column="userCode" />
+        <result property="userName" column="userName" />
+        <result property="phone" column="phone" />
+        <result property="birthday" column="birthday" />
+        <result property="gender" column="gender" />
+        <result property="userRole" column="userRole" />
+        <result property="userRoleName" column="roleName" />
+    </resultMap>
+    <!-- 查询用户列表(参数：对象入参) -->
+    <select id="getUserList" resultMap="userList" parameterType="User">
+        SELECT `u`.*,`r`.`roleName` FROM `smbms_user` `u`,`smbms_role` `r`
+            WHERE `u`.`userName` LIKE CONCAT ('%',#{userName},'%')
+                AND `u`.`userRole` = #{userRole} AND `u`.`userRole` = `r`.`id`
+    </select>
+
+    <!-- 查询用户信息 -->
+    <select id="selectUsers" resultType="User">
+        SELECT * FROM `smbms_user`
+    </select>
+
+    <!-- 通过id查询用户信息 -->
+    <select id="selectUserById" resultType="User">
+        SELECT * FROM `smbms_user` WHERE `id` = #{uId}
+    </select>
+
+    <!-- 查询用户列表(参数：Map) -->
+    <select id="getUserListByMap" resultType="User" parameterType="Map">
+        SELECT * FROM `smbms_user`
+        <trim prefix="where" prefixOverrides="AND | OR">
+            <if test="uName!=null">
+                `userName` LIKE CONCAT ('%',#{uName},'%')
+            </if>
+            <if test="uRole!=null">
+                AND userRole = #{uRole}
+            </if>
+        </trim>
+    </select>
+
+    <!-- 增加用户 -->
+    <insert id="add" parameterType="User">
+        INSERT INTO `smbms_user` (`userCode`,`userName`,`userPassword`,`gender`,`birthday`,`phone`,`address`,`userRole`,`createdBy`,`creationDate`) values (#{userCode},#{userName},#{userPassword},#{gender},
+                #{birthday},#{phone},#{address},#{userRole},
+                #{createdBy},#{creationDate})
+    </insert>
+
+    <!-- 修改用户 -->
+    <update id="update" parameterType="User">
+    	UPDATE `smbms_user` SET `userCode`=#{userCode},`userName`=#{userName},`userPassword`=#{userPassword},`gender`=#{gender},
+			`birthday`=#{birthday},`phone`=#{phone},`address`=#{address},`userRole`=#{userRole}
+	   	WHERE `id`=#{id}
+    </update>
+
+    <!-- 删除用户 -->
+    <delete id="delete" parameterType="Integer">
+    	DELETE FROM `smbms_user` WHERE `id`=#{id}
+    </delete>
+
+    <!-- 加载用户信息 -->
+    <select id="getUser" resultType="User">
+    	SELECT * FROM `smbms_user` WHERE `id`=#{id}
+    </select>
+
+    <!-- 加载用户信息通过用户名和密码 -->
+    <select id="getLoginUser" resultType="User">
+    	SELECT * FROM `smbms_user` WHERE `userCode`= #{uCode} AND `userPassword`= #{pwd}
+    </select>
+</mapper>

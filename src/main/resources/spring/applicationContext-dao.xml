@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+    <!--&lt;!&ndash;配置SqlSessionTemplate&ndash;&gt;
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>-->
+
+    <!--配置mapper组件并注入SqlSessionTemplate实例-->
+    <!--<bean id="userMapper" class="com.bdqn.mybatis.mapper.impl.UserMapperImpl">
+        &lt;!&ndash;使用设值注入的方式将sqlSessionTemplate Bean组件依赖注入&ndash;&gt;
+        <property name="sqlSessionTemplate" ref="sqlSessionTemplate"/>
+    </bean>-->
+
+    <!--配置业务Bean并注入mapper实例-->
+    <!--<bean id="userService" class="com.bdqn.mybatis.service.impl.UserServiceImpl">
+        <property name="userMapper" ref="userMapper"/>
+    </bean>-->
+
+    <!--配置Mapper，根据属性名称自动装配-->
+    <!--<bean id="userMapper" class="com.bdqn.mybatis.mapper.impl.UserMapperImpl" autowire="byName"/>-->
+    <!--使用Spring自动装配,配置业务Bean-->
+    <!--<bean id="userService" class="com.bdqn.mybatis.service.impl.UserServiceImpl" autowire="byName"/>-->
+
+    <!--升级UserMapperImpl使用MapperFactoryBean来整合,注销上面-->
+    <!--删除UserMapper的实现类UserMapperImpl，仅保留UserMapper接口和相关的SQL映射文件-->
+    <!--MapperFactoryBean的用法-->
+    <!--<bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="mapperInterface" value="com.bdqn.mybatis.mapper.UserMapper"/>
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>-->
+
+    <!--再次升级使用扫描Mapper包的形式-->
+    <!--MapperScannerConfigurer的用法-->
+    <!--basePackage属性指定了扫描的基准包，MapperScannerConfigurer将递归扫描基准包（包括各层级子包）下所有的接口-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.bdqn.mybatis.mapper"/>
+    </bean>
+
+</beans>

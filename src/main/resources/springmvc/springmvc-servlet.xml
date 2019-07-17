@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<!--页面控制器-->
+	<!--<bean name="/index.cs" class="com.bdqn.mybatis.controller.IndexController"/>-->
+	<!--用户页面控制器-->
+	<!--<bean name="/user.cs" class="com.bdqn.mybatis.controller.IndexController"/>-->
+
+	<!--配置该标签会自动注册DefaultAnnotationHandlerMapping(处理器映射)
+	与AnnotationMethodHandlerAdapter(处理器适配器)这两个Bean，但是需要
+	@Controller和@RequestMapping这两个注解的支持！-->
+	<mvc:annotation-driven/>
+	<!--该标签是对包进行扫描，实现注解驱动Bean的定义，同时将Bean自动注入容器中使用。
+	即：使标注了Spring MVC注解(如@Controller等)的Bean生效-->
+	<context:component-scan base-package="com.bdqn.mybatis.controller"/>
+	<!--<context:component-scan base-package="com.bdqn.mybatis">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>-->
+
+	<!--mapping将静态资源映射到指定的路径(/statics)下，location本地静态资源所在的目录-->
+	<mvc:resources mapping="/statics/**" location="/statics/" />
+	
+	<!-- 完成视图的对应 -->
+	<!-- 对转向页面的路径解析。prefix：前缀， suffix：后缀 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+
+	<!--全局异常的配置-->
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="java.lang.RuntimeException">error</prop>
+			</props>
+		</property>
+	</bean>
+</beans>

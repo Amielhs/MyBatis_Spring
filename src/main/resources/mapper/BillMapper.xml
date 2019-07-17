@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bdqn.mybatis.mapper.BillMapper">
+
+	<resultMap type="Bill" id="billList">
+		<result property="id" column="id"/>
+		<result property="billCode" column="billCode"/>
+		<result property="productName" column="productName"/>
+		<result property="providerName" column="proName"/>
+		<result property="isPayment" column="isPayment"/>
+		<result property="creationDate" column="creationDate"/>
+	</resultMap>
+    <!-- 查询订单列表 -->
+    <select id="getBillList" resultMap="billList">
+		SELECT `b`.*,`p`.`proName` FROM `smbms_bill` `b`,`smbms_provider` `p`
+			WHERE `b`.`productName` LIKE CONCAT ('%',#{productName},'%')
+					AND `b`.`providerId` = #{providerId}
+					AND `b`.`isPayment` = #{isPayment}
+					AND `b`.`providerId` = `p`.`id`
+	</select>
+
+	<!-- 添加订单 -->
+	<insert id="add" parameterType="Bill" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `smbms_bill` (`billCode`,`productName`,`productDesc`,`productUnit`,
+                `productCount`,`totalPrice`,`isPayment`,`createdBy`,`creationDate`,`modifyBy`,`modifyDate`,`providerId`)
+        VALUES (#{billCode},#{productName},#{productDesc},#{productUnit},
+        		#{productCount},#{totalPrice},#{isPayment},#{createdBy},#{creationDate},
+        		#{modifyBy},#{modifyDate},#{providerId})
+    </insert>
+
+	<!-- 修改订单总金额 -->
+	<update id="update" parameterType="Bill">
+    	UPDATE `smbms_bill` SET `totalPrice`=#{totalPrice} WHERE `id`=#{id}
+    </update>
+
+	<!-- 删除订单 -->
+	<delete id="delete" parameterType="Integer">
+    	DELETE FROM `smbms_bill` WHERE `id`=#{id}
+    </delete>
+
+	<!-- 读取订单 -->
+	<select id="getBill" parameterType="Integer" resultType="Bill">
+    	SELECT `b`.*,`p`.`proName` AS `providerName` FROM `smbms_bill` `b`,`smbms_provider` `p`
+    		WHERE `b`.`providerId`=`p`.`id` AND `b`.`id`=#{id}
+    </select>
+</mapper>
